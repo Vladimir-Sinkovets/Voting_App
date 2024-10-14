@@ -6,9 +6,18 @@ namespace Voting_App
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddAuthentication("Cookie")
+                .AddCookie("Cookie", config =>
+                {
+                    config.LoginPath = "/Auth/Login";
+                });
+
+            builder.Services.AddAuthorization();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
+
+
 
             if (!app.Environment.IsDevelopment())
             {
@@ -21,6 +30,7 @@ namespace Voting_App
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
