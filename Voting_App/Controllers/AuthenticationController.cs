@@ -42,7 +42,7 @@ namespace Voting_App.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel viewModel)
+        public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
             var isSucceed = await _authenticationService.TryLogin(viewModel.Email, viewModel.Password);
 
@@ -52,7 +52,7 @@ namespace Voting_App.Controllers
                 return View(viewModel);
         }
 
-        public async Task<IActionResult> LogoutAsync()
+        public async Task<IActionResult> Logout()
         {
             await _authenticationService.Logout();
 
