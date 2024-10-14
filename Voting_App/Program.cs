@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 namespace Voting_App
 {
     public class Program
@@ -6,13 +8,13 @@ namespace Voting_App
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddAuthentication("Cookie")
-                .AddCookie("Cookie", config =>
-                {
-                    config.LoginPath = "/Auth/Login";
-                });
+            builder.Services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                opt.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie();
 
-            builder.Services.AddAuthorization();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
