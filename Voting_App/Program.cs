@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Voting_App.Services.ApplicationDbContext;
+using Voting_App.Services.ApplicationDataBase;
+using Voting_App.Services.Authentication;
 
 namespace Voting_App
 {
@@ -23,6 +24,10 @@ namespace Voting_App
             {
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddScoped<ICookieAuthenticationService, CookieAuthenticationService>();
 
             var app = builder.Build();
 

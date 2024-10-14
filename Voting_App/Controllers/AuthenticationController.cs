@@ -4,12 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Voting_App.Models;
 using Voting_App.ViewModels;
+using Voting_App.Services.Authentication;
 
 namespace Voting_App.Controllers
 {
     public class AuthenticationController : Controller
     {
         private List<User> _users = new List<User>();
+        private readonly ICookieAuthenticationService _authenticationService;
+
+        public AuthenticationController(ICookieAuthenticationService authenticationService)
+        {
+            _authenticationService = authenticationService;
+        }
 
         [HttpGet]
         public IActionResult Register()
@@ -20,18 +27,12 @@ namespace Voting_App.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel viewModel)
         {
-            User user = _users.FirstOrDefault(u => u.Email == viewModel.Email);
+            var isSucceed = await _authenticationService.TryRegisterUserAsync(viewModel.Email, viewModel.Password);
 
-            if (user == null)
-            {
-                _users.Add(new User { Email = viewModel.Email, PasswordHash = viewModel.Password });
-
-                await SignIn(viewModel.Email);
-
+            if (isSucceed)
                 return RedirectToAction("Index", "Home");
-            }
-
-            return View(viewModel);
+            else
+                return View(viewModel);
         }
 
         [HttpGet]
@@ -43,36 +44,19 @@ namespace Voting_App.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] LoginViewModel viewModel)
         {
-            User user = _users.FirstOrDefault(u => u.Email == viewModel.Email && u.PasswordHash == viewModel.Password);
+            var isSucceed = await _authenticationService.TryLogin(viewModel.Email, viewModel.Password);
 
-            if (user != null)
-            {
-                _users.Add(new User { Email = viewModel.Email, PasswordHash = viewModel.Password });
-
-                await SignIn(viewModel.Email);
-
+            if (isSucceed == true)
                 return RedirectToAction("Index", "Home");
-            }
-
-            return RedirectToAction(nameof(Register));
+            else
+                return View(viewModel);
         }
 
         public async Task<IActionResult> LogoutAsync()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _authenticationService.Logout();
 
             return RedirectToAction(nameof(Login));
-        }
-
-        private async Task SignIn(string userName)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
-            };
-            ClaimsIdentity id = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
     }
 }
