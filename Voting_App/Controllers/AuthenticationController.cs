@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Voting_App.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Voting_App.ViewModels;
 using Voting_App.Services.Authentication;
 
@@ -10,7 +6,6 @@ namespace Voting_App.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private List<User> _users = new List<User>();
         private readonly ICookieAuthenticationService _authenticationService;
 
         public AuthenticationController(ICookieAuthenticationService authenticationService)
@@ -27,10 +22,13 @@ namespace Voting_App.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel viewModel)
         {
+            if (ModelState.IsValid)
+                return View(viewModel);
+
             var isSucceed = await _authenticationService.TryRegisterUserAsync(viewModel.Email, viewModel.Password);
 
             if (isSucceed)
-                return RedirectToAction("Index", "Home");
+                return RedirectToStartPage();
             else
                 return View(viewModel);
         }
@@ -44,10 +42,13 @@ namespace Voting_App.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
+            if (ModelState.IsValid)
+                return View(viewModel);
+
             var isSucceed = await _authenticationService.TryLogin(viewModel.Email, viewModel.Password);
 
             if (isSucceed == true)
-                return RedirectToAction("Index", "Home");
+                return RedirectToStartPage();
             else
                 return View(viewModel);
         }
@@ -56,7 +57,9 @@ namespace Voting_App.Controllers
         {
             await _authenticationService.Logout();
 
-            return RedirectToAction(nameof(Login));
+            return RedirectToStartPage();
         }
+
+        private IActionResult RedirectToStartPage() => RedirectToAction("Index", "Home");
     }
 }
