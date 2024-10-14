@@ -22,7 +22,7 @@ namespace Voting_App.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid == false)
                 return View(viewModel);
 
             var isSucceed = await _authenticationService.TryRegisterUserAsync(viewModel.Email, viewModel.Password);
@@ -42,7 +42,7 @@ namespace Voting_App.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid == false)
                 return View(viewModel);
 
             var isSucceed = await _authenticationService.TryLogin(viewModel.Email, viewModel.Password);
