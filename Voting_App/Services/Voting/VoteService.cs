@@ -1,5 +1,6 @@
 ﻿using Voting_App.Models;
 using Voting_App.Services.ApplicationDataBase;
+using Voting_App.Services.Exceptions;
 
 namespace Voting_App.Services.Voting
 {
@@ -21,21 +22,28 @@ namespace Voting_App.Services.Voting
             return optionsData;
         }
 
-        public bool HasUserVoted(string email)
+        public bool HasUserVoted(string userEmail)
         {
-            var vote = _dbContext.Votes.FirstOrDefault(v => v.User.Email == email);
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == userEmail)
+                ?? throw new NotFoundException($"User with email = {userEmail} does not exist");
+
+            var vote = _dbContext.Votes.FirstOrDefault(v => v.User.Email == userEmail);
 
             return vote != null;
         }
 
         public async Task VoteAsync(string userEmail, int chosenOptionId)
         {
-            var userVote = _dbContext.Votes.FirstOrDefault(v => v.User.Email == userEmail);
-            var option = _dbContext.Options.FirstOrDefault(o => o.Id == chosenOptionId);
-            var user = _dbContext.Users.FirstOrDefault(u => u.Email == userEmail);
+            var option = _dbContext.Options.FirstOrDefault(o => o.Id == chosenOptionId) 
+                ?? throw new NotFoundException($"Option with id = {chosenOptionId} does not exist");
 
-            if (userVote != null || option == null || user == null)
-                throw new Exception(); // todo: add specific exceptions
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == userEmail)
+                ?? throw new NotFoundException($"User with email = {userEmail} does not exist");
+            
+            var userVote = _dbContext.Votes.FirstOrDefault(v => v.User.Email == userEmail);
+
+            if (userVote != null)
+                throw new UserAlreadyVotedException($"User with email = {userEmail} has already voted");
 
 
             var newVote = new Vote() { Option = option, User = user };

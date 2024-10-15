@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Voting_App.Models;
+using Voting_App.Services.Exceptions;
 using Voting_App.Services.Voting;
 using Voting_App.ViewModels;
 
@@ -39,7 +40,22 @@ namespace Voting_App.Controllers
         [HttpPost]
         public async Task<IActionResult> Vote(VoteViewModel viewModel)
         {
-            await _voteService.VoteAsync(UserEmail, viewModel.ChosenOptionId);
+            try
+            {
+                await _voteService.VoteAsync(UserEmail, viewModel.ChosenOptionId);
+            }
+            catch (UserAlreadyVotedException)
+            {
+                return RedirectToAction(nameof(Vote));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch 
+            {
+                throw;
+            }
 
             return RedirectToAction(nameof(Vote));
         }
