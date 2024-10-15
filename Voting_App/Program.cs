@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Voting_App.Services.ApplicationDataBase;
 using Voting_App.Services.Authentication;
 using Voting_App.Services.Voting;

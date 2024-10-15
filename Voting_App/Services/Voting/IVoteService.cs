@@ -1,5 +1,4 @@
-﻿
-namespace Voting_App.Services.Voting
+﻿namespace Voting_App.Services.Voting
 {
     public interface IVoteService
     {
