@@ -18,7 +18,11 @@ namespace Voting_App
                 opt.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 opt.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie();
+            }).AddCookie(options =>
+            {
+                options.LoginPath = "/Authentication/Login";
+                options.AccessDeniedPath = "/Authentication/Login";
+            });
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDbContext>(opt =>
@@ -28,7 +32,7 @@ namespace Voting_App
 
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddScoped<ICookieAuthenticationService, CookieAuthenticationService>();
+            builder.Services.AddTransient<ICookieAuthenticationService, CookieAuthenticationService>();
             builder.Services.AddTransient<IVoteService, VoteService>();
 
             var app = builder.Build();
