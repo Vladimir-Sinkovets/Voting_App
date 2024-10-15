@@ -23,9 +23,9 @@ namespace Voting_App.Services.Voting
 
         public bool HasUserVoted(string email)
         {
-            var user = _dbContext.Votes.FirstOrDefault(v => v.User.Email == email);
+            var vote = _dbContext.Votes.FirstOrDefault(v => v.User.Email == email);
 
-            return user != null;
+            return vote != null;
         }
 
         public async Task VoteAsync(string userEmail, int chosenOptionId)
