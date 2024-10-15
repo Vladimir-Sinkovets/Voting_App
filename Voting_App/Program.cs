@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Voting_App.Models;
 using Voting_App.Services.ApplicationDataBase;
 using Voting_App.Services.Authentication;
 using Voting_App.Services.PasswordHash;
@@ -39,7 +40,6 @@ namespace Voting_App
             var app = builder.Build();
 
 
-
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -58,7 +58,26 @@ namespace Voting_App
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            using (var scope = app.Services.CreateScope())
+            {
+                InitDataBase(scope.ServiceProvider.GetRequiredService<ApplicationDbContext>());
+            }
+
             app.Run();
+        }
+
+        private static void InitDataBase(ApplicationDbContext dbContext)
+        {
+            dbContext.Database.Migrate();
+
+            if (dbContext.Options.Count() == 0)
+            {
+                dbContext.Options.Add(new Option() { Name = "First", });
+                dbContext.Options.Add(new Option() { Name = "Second", });
+                dbContext.Options.Add(new Option() { Name = "Third", });
+
+                dbContext.SaveChanges();
+            }
         }
     }
 }
