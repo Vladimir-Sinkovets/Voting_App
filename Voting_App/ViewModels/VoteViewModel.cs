@@ -4,7 +4,7 @@ namespace Voting_App.ViewModels
 {
     public class VoteViewModel
     {
-        public IEnumerable<OptionData> OptionsData { get; set; }
+        public IEnumerable<OptionData>? OptionsData { get; set; }
 
         public bool HasUserVoted { get; set; }
 

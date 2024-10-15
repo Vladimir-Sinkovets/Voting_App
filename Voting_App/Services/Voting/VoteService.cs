@@ -17,7 +17,7 @@ namespace Voting_App.Services.Voting
         {
             var options = _dbContext.Options;
 
-            var optionsData = options.Select(o => new OptionData() { Id = o.Id, Name = o.Name, VoteCount = o.Votes.Count });
+            var optionsData = options.Select(o => new OptionData() { Id = o.Id, Name = o.Name, VoteCount = o.Votes!.Count });
 
             return optionsData;
         }
@@ -27,7 +27,7 @@ namespace Voting_App.Services.Voting
             var user = _dbContext.Users.FirstOrDefault(u => u.Email == userEmail)
                 ?? throw new NotFoundException($"User with email = {userEmail} does not exist");
 
-            var vote = _dbContext.Votes.FirstOrDefault(v => v.User.Email == userEmail);
+            var vote = _dbContext.Votes.FirstOrDefault(v => v.User!.Email == userEmail);
 
             return vote != null;
         }
@@ -40,7 +40,7 @@ namespace Voting_App.Services.Voting
             var user = _dbContext.Users.FirstOrDefault(u => u.Email == userEmail)
                 ?? throw new NotFoundException($"User with email = {userEmail} does not exist");
             
-            var userVote = _dbContext.Votes.FirstOrDefault(v => v.User.Email == userEmail);
+            var userVote = _dbContext.Votes.FirstOrDefault(v => v.User!.Email == userEmail);
 
             if (userVote != null)
                 throw new UserAlreadyVotedException($"User with email = {userEmail} has already voted");
