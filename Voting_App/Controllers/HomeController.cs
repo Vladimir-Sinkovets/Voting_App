@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Voting_App.Models;
@@ -22,6 +23,7 @@ namespace Voting_App.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Vote()
         {
             var options = _voteService.GetOptionsData();
@@ -38,6 +40,7 @@ namespace Voting_App.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Vote(VoteViewModel viewModel)
         {
             try
