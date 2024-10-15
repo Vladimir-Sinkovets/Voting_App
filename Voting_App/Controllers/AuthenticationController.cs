@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Voting_App.ViewModels;
 using Voting_App.Services.Authentication;
+using Voting_App.Services.Exceptions;
 
 namespace Voting_App.Controllers
 {
@@ -25,12 +26,20 @@ namespace Voting_App.Controllers
             if (ModelState.IsValid == false)
                 return View(viewModel);
 
-            var isSucceed = await _authenticationService.TryRegisterUserAsync(viewModel.Email, viewModel.Password);
-
-            if (isSucceed)
-                return RedirectToStartPage();
-            else
+            try
+            {
+                await _authenticationService.RegisterUserAsync(viewModel.Email, viewModel.Password);
+            }
+            catch (UserAlreadyRegisteredException)
+            {
                 return View(viewModel);
+            }
+            catch
+            {
+                throw;
+            }
+
+            return RedirectToStartPage();
         }
 
         [HttpGet]
@@ -45,12 +54,19 @@ namespace Voting_App.Controllers
             if (ModelState.IsValid == false)
                 return View(viewModel);
 
-            var isSucceed = await _authenticationService.TryLogin(viewModel.Email, viewModel.Password);
-
-            if (isSucceed == true)
-                return RedirectToStartPage();
-            else
+            try
+            {
+                await _authenticationService.Login(viewModel.Email, viewModel.Password);
+            }
+            catch (NotFoundException)
+            {
                 return View(viewModel);
+            }
+            catch
+            {
+                throw;
+            }
+            return RedirectToStartPage();
         }
 
         public async Task<IActionResult> Logout()

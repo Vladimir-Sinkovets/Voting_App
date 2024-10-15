@@ -3,7 +3,7 @@
     public interface ICookieAuthenticationService
     {
         Task Logout();
-        Task<bool> TryLogin(string email, string password);
-        Task<bool> TryRegisterUserAsync(string username, string password);
+        Task Login(string email, string password);
+        Task RegisterUserAsync(string username, string password);
     }
 }

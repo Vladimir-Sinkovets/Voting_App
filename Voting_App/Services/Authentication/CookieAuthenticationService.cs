@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Voting_App.Models;
 using Voting_App.Services.ApplicationDataBase;
+using Voting_App.Services.Exceptions;
 
 namespace Voting_App.Services.Authentication
 {
@@ -17,32 +18,28 @@ namespace Voting_App.Services.Authentication
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<bool> TryRegisterUserAsync(string email, string password)
+        public async Task RegisterUserAsync(string email, string password)
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
 
             if (user != null)
-                return false;
+                throw new UserAlreadyRegisteredException($"User with email = {email} is already registered");
 
             _dbContext.Users.Add(new User { Email = email, PasswordHash = password });
 
             await _dbContext.SaveChangesAsync();
 
             await SignIn(email);
-
-            return true;
         }
 
-        public async Task<bool> TryLogin(string email, string password)
+        public async Task Login(string email, string password)
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == password);
 
             if (user == null)
-                return false;
+                throw new NotFoundException($"User with email = {email} does not exist");
 
             await SignIn(email);
-
-            return true;
         }
 
         public async Task Logout()
