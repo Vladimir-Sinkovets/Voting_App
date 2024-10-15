@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Voting_App.Services.ApplicationDataBase;
 using Voting_App.Services.Authentication;
+using Voting_App.Services.PasswordHash;
 using Voting_App.Services.Voting;
 
 namespace Voting_App
@@ -33,6 +34,7 @@ namespace Voting_App
 
             builder.Services.AddTransient<IAuthenticationService, CookieAuthenticationService>();
             builder.Services.AddTransient<IVoteService, VoteService>();
+            builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
 
             var app = builder.Build();
 

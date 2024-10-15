@@ -28,7 +28,7 @@ namespace Voting_App.Controllers
 
             try
             {
-                await _authenticationService.RegisterUserAsync(viewModel.Email, viewModel.Password);
+                await _authenticationService.RegisterUserAsync(viewModel.Email!, viewModel.Password!);
             }
             catch (UserAlreadyRegisteredException)
             {
@@ -56,9 +56,13 @@ namespace Voting_App.Controllers
 
             try
             {
-                await _authenticationService.Login(viewModel.Email, viewModel.Password);
+                await _authenticationService.Login(viewModel.Email!, viewModel.Password!);
             }
             catch (NotFoundException)
+            {
+                return View(viewModel);
+            }
+            catch (IncorrectPasswordException)
             {
                 return View(viewModel);
             }
