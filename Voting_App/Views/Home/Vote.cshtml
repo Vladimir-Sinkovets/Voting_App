@@ -1,0 +1,27 @@
+﻿@model VoteViewModel
+
+<ul class="list-group">
+
+    @foreach (var option in Model.OptionsData)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            @option.Name
+
+            @if(Model.HasUserVoted)
+            {
+                <span class="badge bg-primary rounded-pill">
+                    @option.VoteCount
+                </span>
+            }
+            else
+            {
+                <form asp-action="Vote" asp-controller="Home" method="post">
+                    <input hidden value="@option.Id" asp-for="ChosenOptionId" />
+                    <input class="btn btn-primary" type="submit" value="Vote"/>
+                </form>
+            }
+        </li>
+    }
+</ul>
+
+

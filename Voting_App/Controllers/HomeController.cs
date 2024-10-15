@@ -1,16 +1,22 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Voting_App.Models;
+using Voting_App.Services.Exceptions;
+using Voting_App.Services.Voting;
+using Voting_App.ViewModels;
 
 namespace Voting_App.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IVoteService _voteService;
 
-        public HomeController(ILogger<HomeController> logger)
+        private string UserEmail { get => HttpContext.User.Identity!.Name!; }
+
+        public HomeController(IVoteService voteService)
         {
-            _logger = logger;
+            _voteService = voteService;
         }
 
         public IActionResult Index()
@@ -18,9 +24,45 @@ namespace Voting_App.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpGet]
+        [Authorize]
+        public IActionResult Vote()
         {
-            return View();
+            var options = _voteService.GetOptionsData();
+
+            var hasUserVoted = _voteService.HasUserVoted(UserEmail);
+
+            var viewModel = new VoteViewModel()
+            {
+                OptionsData = options,
+                HasUserVoted = hasUserVoted,
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Vote(VoteViewModel viewModel)
+        {
+            try
+            {
+                await _voteService.VoteAsync(UserEmail, viewModel.ChosenOptionId);
+            }
+            catch (UserAlreadyVotedException)
+            {
+                return RedirectToAction(nameof(Vote));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch 
+            {
+                throw;
+            }
+
+            return RedirectToAction(nameof(Vote));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,4 +1,4 @@
-namespace Voting_App.Models
+namespace Voting_App.ViewModels
 {
     public class ErrorViewModel
     {
