@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Voting_App.Services.ApplicationDataBase;
 using Voting_App.Services.Authentication;
+using Voting_App.Services.Voting;
 
 namespace Voting_App
 {
@@ -28,6 +29,7 @@ namespace Voting_App
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddScoped<ICookieAuthenticationService, CookieAuthenticationService>();
+            builder.Services.AddTransient<IVoteService, VoteService>();
 
             var app = builder.Build();
 

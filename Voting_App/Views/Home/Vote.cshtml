@@ -2,21 +2,21 @@
 
 <ul class="list-group">
 
-    @for (int i = 0; i < Model.OptionData.Count; i++)
+    @foreach (var option in Model.OptionsData)
     {
         <li class="list-group-item d-flex justify-content-between align-items-center">
-            @Model.OptionData[i].Name
+            @option.Name
 
-            @if(Model.HaveUserVoted)
+            @if(Model.HasUserVoted)
             {
                 <span class="badge bg-primary rounded-pill">
-                    @Model.OptionData[i].VoteCount
+                    @option.VoteCount
                 </span>
             }
             else
             {
                 <form>
-                    <input hidden value="@Model.OptionData[i].Id" asp-for="ChosenOptionId"/>
+                    <input hidden value="@option.Id" asp-for="ChosenOptionId" />
                     <input class="btn btn-primary" type="submit" value="Vote"/>
                 </form>
             }
