@@ -15,7 +15,7 @@
             }
             else
             {
-                <form>
+                <form asp-action="Vote" asp-controller="Home" method="post">
                     <input hidden value="@option.Id" asp-for="ChosenOptionId" />
                     <input class="btn btn-primary" type="submit" value="Vote"/>
                 </form>

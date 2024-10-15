@@ -5,5 +5,6 @@ namespace Voting_App.Services.Voting
     {
         IEnumerable<OptionData> GetOptionsData();
         bool HasUserVoted(string email);
+        Task VoteAsync(string userEmail, int chosenOptionId);
     }
 }

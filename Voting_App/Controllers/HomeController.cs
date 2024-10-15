@@ -10,6 +10,7 @@ namespace Voting_App.Controllers
     {
         private readonly IVoteService _voteService;
 
+        private string UserEmail { get => HttpContext.User.Identity!.Name!; }
         public HomeController(IVoteService voteService)
         {
             _voteService = voteService;
@@ -24,7 +25,7 @@ namespace Voting_App.Controllers
         {
             var options = _voteService.GetOptionsData();
 
-            var hasUserVoted = _voteService.HasUserVoted(HttpContext.User.Identity!.Name!);
+            var hasUserVoted = _voteService.HasUserVoted(UserEmail);
 
             var viewModel = new VoteViewModel()
             {
@@ -33,6 +34,14 @@ namespace Voting_App.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Vote(VoteViewModel viewModel)
+        {
+            await _voteService.VoteAsync(UserEmail, viewModel.ChosenOptionId);
+
+            return RedirectToAction(nameof(Vote));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
