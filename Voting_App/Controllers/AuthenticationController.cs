@@ -7,9 +7,9 @@ namespace Voting_App.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private readonly ICookieAuthenticationService _authenticationService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public AuthenticationController(ICookieAuthenticationService authenticationService)
+        public AuthenticationController(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
         }

@@ -13,10 +13,12 @@ namespace Voting_App.Controllers
         private readonly IVoteService _voteService;
 
         private string UserEmail { get => HttpContext.User.Identity!.Name!; }
+
         public HomeController(IVoteService voteService)
         {
             _voteService = voteService;
         }
+
         public IActionResult Index()
         {
             return View();

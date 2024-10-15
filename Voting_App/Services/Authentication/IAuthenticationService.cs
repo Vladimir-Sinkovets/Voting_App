@@ -1,6 +1,6 @@
 ﻿namespace Voting_App.Services.Authentication
 {
-    public interface ICookieAuthenticationService
+    public interface IAuthenticationService
     {
         Task Logout();
         Task Login(string email, string password);

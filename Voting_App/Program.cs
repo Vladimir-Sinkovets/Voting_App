@@ -31,7 +31,7 @@ namespace Voting_App
 
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddTransient<ICookieAuthenticationService, CookieAuthenticationService>();
+            builder.Services.AddTransient<IAuthenticationService, CookieAuthenticationService>();
             builder.Services.AddTransient<IVoteService, VoteService>();
 
             var app = builder.Build();

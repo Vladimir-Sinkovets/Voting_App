@@ -7,7 +7,7 @@ using Voting_App.Services.Exceptions;
 
 namespace Voting_App.Services.Authentication
 {
-    public class CookieAuthenticationService : ICookieAuthenticationService
+    public class CookieAuthenticationService : IAuthenticationService
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
